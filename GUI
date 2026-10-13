@@ -1,0 +1,50 @@
+-- Загрузка современной и оптимизированной библиотеки Fluent UI
+local Fluent = loadstring(game:HttpGet("https://github.com"))()
+
+-- Создание основного окна чита
+local Window = Fluent:CreateWindow({
+    Title = "Universal Visuals HUB | MM2, JJS, TSB",
+    SubTitle = "by AI Collaborator",
+    TabWidth = 160,
+    Size = UDim2.fromOffset(580, 460),
+    Acrylic = true, -- Размытие заднего фона меню (красиво, но можно отключить для FPS)
+    Theme = "Dark",
+    MinimizeKey = Enum.KeyCode.Z -- Сворачивание и разворачивание меню на кнопку Z
+})
+
+-- Создание вкладок меню
+local Tabs = {
+    Main = Window:AddTab({ Title = "Главная", Icon = "home" }),
+    Visuals = Window:AddTab({ Title = "Визуалы (ESP)", Icon = "eye" }),
+    Optimization = Window:AddTab({ Title = "Оптимизация", Icon = "zap" }),
+    Settings = Window:AddTab({ Title = "Настройки", Icon = "settings" })
+}
+
+-- Уведомление о успешном запуске скрипта
+Fluent:Notify({
+    Title = "Visuals HUB Launched",
+    Content = "Меню успешно загружено. Нажмите 'Z' для сворачивания.",
+    Duration = 5
+})
+
+-- Вкладка: Главная (Базовая информация)
+Tabs.Main:AddParagraph({
+    Title = "Добро пожаловать!",
+    Content = "Этот скрипт разрабатывается как лучший инструмент для MM2, ТСБ и ЖЖС.\nТекущий бинд меню: [ Z ]"
+})
+
+-- Вкладка: Оптимизация (Пример заглушек под будущие функции)
+Tabs.Optimization:AddToggle("ToggleTextures", {Title = "Отключить текстуры (Серый мир)", Default = false})
+Tabs.Optimization:AddToggle("ToggleAccessories", {Title = "Убрать аксессуары игроков", Default = false})
+
+-- Вкладка: Настройки (Кнопка полного закрытия скрипта)
+Tabs.Settings:AddButton({
+    Title = "Полностью закрыть скрипт",
+    Description = "Удаляет меню и останавливает все процессы",
+    Callback = function()
+        Window:Destroy()
+    end
+})
+
+-- Автоматический выбор первой вкладки при старте
+Window:SelectTab(1)
