@@ -1,15 +1,15 @@
--- Загрузка современной и оптимизированной библиотеки Fluent UI
-local Fluent = loadstring(game:HttpGet("https://github.com"))()
+-- Загрузка оптимизированной версии Fluent, совместимой с Xeno
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 
--- Создание основного окна чита
+-- Настройки основного окна
 local Window = Fluent:CreateWindow({
     Title = "Universal Visuals HUB | MM2, JJS, TSB",
     SubTitle = "by AI Collaborator",
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
-    Acrylic = true, -- Размытие заднего фона меню (красиво, но можно отключить для FPS)
+    Acrylic = false, -- СТРОГО FALSE ДЛЯ XENO (предотвращает краш инжектора)
     Theme = "Dark",
-    MinimizeKey = Enum.KeyCode.Z -- Сворачивание и разворачивание меню на кнопку Z
+    MinimizeKey = Enum.KeyCode.Z -- Сворачивание меню на кнопку Z
 })
 
 -- Создание вкладок меню
@@ -23,24 +23,24 @@ local Tabs = {
 -- Уведомление о успешном запуске скрипта
 Fluent:Notify({
     Title = "Visuals HUB Launched",
-    Content = "Меню успешно загружено. Нажмите 'Z' для сворачивания.",
+    Content = "Меню успешно загружено на Xeno. Кнопка сворачивания: [ Z ]",
     Duration = 5
 })
 
--- Вкладка: Главная (Базовая информация)
+-- Вкладка: Главная
 Tabs.Main:AddParagraph({
     Title = "Добро пожаловать!",
-    Content = "Этот скрипт разрабатывается как лучший инструмент для MM2, ТСБ и ЖЖС.\nТекущий бинд меню: [ Z ]"
+    Content = "Скрипт оптимизирован под Xeno.\nТекущие цели: MM2, ТСБ, ЖЖС."
 })
 
--- Вкладка: Оптимизация (Пример заглушек под будущие функции)
-Tabs.Optimization:AddToggle("ToggleTextures", {Title = "Отключить текстуры (Серый мир)", Default = false})
-Tabs.Optimization:AddToggle("ToggleAccessories", {Title = "Убрать аксессуары игроков", Default = false})
+-- Вкладка: Оптимизация (Готовим кнопки под будущий функционал)
+local ToggleTextures = Tabs.Optimization:AddToggle("ToggleTextures", {Title = "Отключить текстуры (Серый мир)", Default = false})
+local ToggleAccessories = Tabs.Optimization:AddToggle("ToggleAccessories", {Title = "Убрать аксессуары игроков", Default = false})
 
 -- Вкладка: Настройки (Кнопка полного закрытия скрипта)
 Tabs.Settings:AddButton({
     Title = "Полностью закрыть скрипт",
-    Description = "Удаляет меню и останавливает все процессы",
+    Description = "Удаляет меню",
     Callback = function()
         Window:Destroy()
     end
