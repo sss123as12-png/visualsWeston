@@ -1,50 +1,109 @@
--- Загрузка оптимизированной версии Fluent, совместимой с Xeno
-local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+-- Проверяем, не запущен ли скрипт уже, чтобы не дублировать
+if game:GetService("CoreGui"):FindFirstChild("UniversalVisualsHUB") then
+    game:GetService("CoreGui"):FindFirstChild("UniversalVisualsHUB"):Destroy()
+end
 
--- Настройки основного окна
-local Window = Fluent:CreateWindow({
-    Title = "Universal Visuals HUB | MM2, JJS, TSB",
-    SubTitle = "by AI Collaborator",
-    TabWidth = 160,
-    Size = UDim2.fromOffset(580, 460),
-    Acrylic = false, -- СТРОГО FALSE ДЛЯ XENO (предотвращает краш инжектора)
-    Theme = "Dark",
-    MinimizeKey = Enum.KeyCode.Z -- Сворачивание меню на кнопку Z
-})
+-- Создание корневого интерфейса в CoreGui (защищенная зона, не видна на стримах)
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "UniversalVisualsHUB"
+ScreenGui.Parent = game:GetService("CoreGui")
+ScreenGui.ResetOnSpawn = false
 
--- Создание вкладок меню
-local Tabs = {
-    Main = Window:AddTab({ Title = "Главная", Icon = "home" }),
-    Visuals = Window:AddTab({ Title = "Визуалы (ESP)", Icon = "eye" }),
-    Optimization = Window:AddTab({ Title = "Оптимизация", Icon = "zap" }),
-    Settings = Window:AddTab({ Title = "Настройки", Icon = "settings" })
-}
+-- Главный фрейм (Окно меню)
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Size = UDim2.new(0, 450, 0, 300)
+MainFrame.Position = UDim2.new(0.5, -225, 0.5, -150) -- Центр экрана
+MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25) -- Темная тема
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Draggable = true -- Меню можно двигать мышкой!
+MainFrame.Parent = ScreenGui
 
--- Уведомление о успешном запуске скрипта
-Fluent:Notify({
-    Title = "Visuals HUB Launched",
-    Content = "Меню успешно загружено на Xeno. Кнопка сворачивания: [ Z ]",
-    Duration = 5
-})
+-- Скругление углов для красивого вида
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 8)
+UICorner.Parent = MainFrame
 
--- Вкладка: Главная
-Tabs.Main:AddParagraph({
-    Title = "Добро пожаловать!",
-    Content = "Скрипт оптимизирован под Xeno.\nТекущие цели: MM2, ТСБ, ЖЖС."
-})
+-- Верхняя панель (Топбар)
+local TopBar = Instance.new("Frame")
+TopBar.Name = "TopBar"
+TopBar.Size = UDim2.new(1, 0, 0, 35)
+TopBar.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+TopBar.BorderSizePixel = 0
+TopBar.Parent = MainFrame
 
--- Вкладка: Оптимизация (Готовим кнопки под будущий функционал)
-local ToggleTextures = Tabs.Optimization:AddToggle("ToggleTextures", {Title = "Отключить текстуры (Серый мир)", Default = false})
-local ToggleAccessories = Tabs.Optimization:AddToggle("ToggleAccessories", {Title = "Убрать аксессуары игроков", Default = false})
+local TopBarCorner = Instance.new("UICorner")
+TopBarCorner.CornerRadius = UDim.new(0, 8)
+TopBarCorner.Parent = TopBar
 
--- Вкладка: Настройки (Кнопка полного закрытия скрипта)
-Tabs.Settings:AddButton({
-    Title = "Полностью закрыть скрипт",
-    Description = "Удаляет меню",
-    Callback = function()
-        Window:Destroy()
+-- Название чита
+local Title = Instance.new("TextLabel")
+Title.Name = "Title"
+Title.Size = UDim2.new(1, -40, 1, 0)
+Title.Position = UDim2.new(0, 15, 0, 0)
+Title.BackgroundTransparency = 1
+Title.Text = "Universal Visuals HUB | MM2 • JJS • TSB"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextSize = 14
+Title.Font = Enum.Font.SourceSansBold
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.Parent = TopBar
+
+-- Кнопка закрытия (X)
+local CloseButton = Instance.new("TextButton")
+CloseButton.Name = "CloseButton"
+CloseButton.Size = UDim2.new(0, 30, 0, 30)
+CloseButton.Position = UDim2.new(1, -35, 0, 2.5)
+CloseButton.BackgroundTransparency = 1
+CloseButton.Text = "✕"
+CloseButton.TextColor3 = Color3.fromRGB(150, 150, 150)
+CloseButton.TextSize = 18
+CloseButton.Font = Enum.Font.SourceSansBold
+CloseButton.Parent = TopBar
+
+-- Подсветка кнопки закрытия при наведении
+CloseButton.MouseEnter:Connect(function() CloseButton.TextColor3 = Color3.fromRGB(255, 75, 75) end)
+CloseButton.MouseLeave:Connect(function() CloseButton.TextColor3 = Color3.fromRGB(150, 150, 150) end)
+CloseButton.MouseButton1Click:Connect(function() ScreenGui:Destroy() end)
+
+-- Левое меню для вкладок
+local Sidebar = Instance.new("Frame")
+Sidebar.Name = "Sidebar"
+Sidebar.Size = UDim2.new(0, 120, 1, -35)
+Sidebar.Position = UDim2.new(0, 0, 0, 35)
+Sidebar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Sidebar.BorderSizePixel = 0
+Sidebar.Parent = MainFrame
+
+-- Контентная зона (где будут настройки)
+local ContentFrame = Instance.new("Frame")
+ContentFrame.Name = "ContentFrame"
+ContentFrame.Size = UDim2.new(1, -120, 1, -35)
+ContentFrame.Position = UDim2.new(0, 120, 0, 35)
+ContentFrame.BackgroundTransparency = 1
+ContentFrame.Parent = MainFrame
+
+-- Текст-заглушка внутри контента
+local InfoText = Instance.new("TextLabel")
+InfoText.Size = UDim2.new(1, -20, 1, -20)
+InfoText.Position = UDim2.new(0, 10, 0, 10)
+InfoText.BackgroundTransparency = 1
+InfoText.Text = "Добро пожаловать!\n\nНажми [ Z ], чтобы свернуть/развернуть меню.\n\nДавай настроим оптимизацию FPS!"
+InfoText.TextColor3 = Color3.fromRGB(200, 200, 200)
+InfoText.TextSize = 14
+InfoText.Font = Enum.Font.SourceSans
+InfoText.TextWrapped = true
+InfoText.TextYAlignment = Enum.TextYAlignment.Top
+InfoText.Parent = ContentFrame
+
+-- ЛОГИКА НАЖАТИЯ КНОПКИ Z (Сворачивание / Разворачивание)
+local UserInputService = game:GetService("UserInputService")
+local IsMinimized = false
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if not gameProcessed and input.KeyCode == Enum.KeyCode.Z then
+        IsMinimized = not IsMinimized
+        MainFrame.Visible = not IsMinimized
     end
-})
-
--- Автоматический выбор первой вкладки при старте
-Window:SelectTab(1)
+end)
